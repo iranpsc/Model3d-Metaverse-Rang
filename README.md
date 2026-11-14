@@ -20,7 +20,7 @@
 In hyperscale virtual worlds, unoptimized 3D geometry and embedded monolithic textures prevent dynamic material hot-swapping and cause GPU memory (`VRAM`) exhaustion. As detailed in the [**MetaRang Multi-Platform Texturing & Rendering Engineering Framework**](https://docs.google.com/document/d/1V3WmtzFnHSwDsLzdFEuchUnKyaG5WHXqFAkYych4QGw/edit?usp=drivesdk&ouid=105432883195858560779), MetaRang operates on an ultra-lightweight **`<10MB` initial client bootstrap** in [**Metaverse-Rang-World-3D-Multiverse**](https://github.com/iranpsc/Metaverse-Rang-World-3D-Multiverse), where all world assets are streamed additively based on avatar proximity (`LOD`) and a **7-tier KTX2 / Basis Universal texture resolution pyramid (`64px` to `4096px`)**.
 
 This repository transitions our 3D production pipeline from internal workgroups into a **transparent, decentralized, international GitHub workflow** under the **GNU Affero General Public License v3.0 (`AGPL-3.0`)**:
-- **📋 Issue-Driven 3D Task Briefs:** Every required 3D model (mega-structures, modular buildings, urban furniture, micro-props, or environmental assets) is published as a formal [GitHub Issue](https://www.google.com/search?q=https://github.com/iranpsc/Model3d-Metaverse-Rang/issues) complete with **Requester Category & ID** (e.g., `investors/bn-1000`), concept art, orthographic reference images, video walkthroughs, and spatial dimensions.
+- **📋 Issue-Driven 3D Task Briefs:** Every required 3D model (mega-structures, modular buildings, urban furniture, micro-props, or environmental assets) is published as a formal [GitHub Issue](https://www.google.com/search?q=https://github.com/iranpsc/Model3d-Metaverse-Rang/issues) complete with **Requester Category & ID** (e.g., `investors/bn-1000`), concept art, orthographic reference images, video walkthroughs, spatial dimensions, labels, and timeline estimates.
 - **🗂️ Requester-Scoped & Segregated File Hierarchy:** All assets are organized by requester category and unique ID (e.g., `investors/bn-1000/<Object-Name-In-English>/`) with segregated subdirectories for **unpacked `gltf/`**, external **`textures/`** (`4K`), editable **`source/`** files, and **`previews/`**.
 - **🔄 Dynamic Texture Hot-Swapping (`Unpacked .gltf`):** Models are delivered as **unpacked `.gltf` files** (referencing external texture files rather than packed `.glb` binaries) so that replacing or updating any texture file manually inside the `textures/` folder immediately updates the 3D model's appearance without re-exporting from 3D software.
 - **🌍 Verified International Portfolio for 3D Artists:** Because this repository is 100% public and linked to our central [**Organization Project Board (`github.com/orgs/iranpsc/projects/2`)**](https://github.com/orgs/iranpsc/projects/2), every merged 3D model and Pull Request is permanently recorded on the contributor's international GitHub profile as a verified production contribution to a national metaverse infrastructure.
@@ -33,29 +33,26 @@ Every 3D model in this repository **MUST** be stored under the directory of its 
 Model3d-Metaverse-Rang/
 ├── investors/                                      # Requester Category: Institutional Investors & Funds
 │   └── bn-1000/                                    # Unique Requester ID (e.g., bn-1000 = Matrix Exit Fund)
-│       ├── Matrix-Central-Tower/                   # Object Name in English (If >100MB, split into modular folders)
+│       ├── Aryana-Urban-Bench/                     # Object Name in English (Urban furniture example)
 │       │   ├── gltf/                               # Unpacked glTF 2.0 output (.gltf + .bin) referencing ../textures/
-│       │   │   ├── Matrix-Central-Tower.gltf       # JSON scene descriptor with relative paths to ../textures/
-│       │   │   └── Matrix-Central-Tower.bin        # Binary geometry buffer (strictly <= 100 MB)
+│       │   │   ├── Aryana-Urban-Bench.gltf         # JSON scene descriptor with relative paths to ../textures/
+│       │   │   └── Aryana-Urban-Bench.bin          # Binary geometry buffer (strictly <= 100 MB)
 │       │   ├── textures/                           # External 4K (4096x4096) Tiled PBR textures (Manual swap updates model)
-│       │   │   ├── Tex_Concrete_Wall_01_BaseColor_4096.png
-│       │   │   ├── Tex_Concrete_Wall_01_ORM_4096.png
-│       │   │   └── Tex_Concrete_Wall_01_Normal_4096.png
+│       │   │   ├── Tex_Wood_BenchSlats_01_BaseColor_4096.png
+│       │   │   ├── Tex_Wood_BenchSlats_01_ORM_4096.png
+│       │   │   ├── Tex_Wood_BenchSlats_01_Normal_4096.png
+│       │   │   ├── Tex_Metal_BenchFrame_01_BaseColor_4096.png
+│       │   │   ├── Tex_Metal_BenchFrame_01_ORM_4096.png
+│       │   │   └── Tex_Metal_BenchFrame_01_Normal_4096.png
 │       │   ├── source/                             # Raw editable 3D software source file (strictly <= 100 MB, unpacked)
-│       │   │   └── Matrix-Central-Tower.blend      # (.blend, .max, .ma, .mb, or .fbx with external texture links)
+│       │   │   └── Aryana-Urban-Bench.blend        # (.blend, .max, .ma, .mb, or .fbx with external texture links)
 │       │   ├── previews/                           # Visual QA verification renders (.png / .webp)
 │       │   │   ├── 01-beauty-render.png
 │       │   │   ├── 02-wireframe-topology.png
 │       │   │   └── 03-uv-checkerboard.png
 │       │   └── metadata.json                       # Bounding box dimensions (L/W/H), SubMeshes, Requester ID
 │       │
-│       ├── Matrix-Central-Tower-Part2-Plaza/       # Modular split example when total structure exceeds 100 MB
-│       │   ├── gltf/
-│       │   ├── textures/
-│       │   ├── source/
-│       │   └── previews/
-│       │
-│       └── Futuristic-Street-Bench/                # Small/Medium object example under bn-1000
+│       └── Matrix-Central-Tower/                   # Large structure example (If >100MB, split into modular folders)
 │           ├── gltf/
 │           ├── textures/
 │           ├── source/
@@ -98,7 +95,7 @@ Model3d-Metaverse-Rang/
 To achieve maximum rendering performance across thousands of concurrent buildings and props while utilizing the centralized [**MetaRang Texture Pyramid (`Wood`, `Metal`, `Concrete`, `Fabric`, `Glass`, `Stone`)**](https://docs.google.com/document/d/1V3WmtzFnHSwDsLzdFEuchUnKyaG5WHXqFAkYych4QGw/edit?usp=drivesdk&ouid=105432883195858560779):
 
 1. **Tile-Based Texturing Workflow (Seamless Tiling & Trim Sheets):**
-   - Architectural surfaces (walls, facades, roofs, pavements, structural columns, terrain) **MUST** use **seamless tileable 4K PBR textures** and **modular trim sheets** rather than unique 1:1 baked megatextures.
+   - Architectural and urban surfaces (walls, facades, roofs, pavements, structural columns, bench slats, frames) **MUST** use **seamless tileable 4K PBR textures** and **modular trim sheets** rather than unique 1:1 baked megatextures.
    - Because `.gltf` files reference external textures in `../textures/`, any artist or automated pipeline can swap a tiled 4K texture in the `textures/` folder and immediately see the updated material on the 3D model.
 2. **UV Unwrapping & Texel Density Rules:**
    - **Consistent Texel Density:** Maintain uniform texel density across all contiguous modules of a building or prop so tiled 4K textures never appear stretched, warped, or inconsistently scaled across adjacent meshes.
@@ -108,16 +105,44 @@ To achieve maximum rendering performance across thousands of concurrent building
    - **ORM Packed Map (`4096×4096`, Linear):** Channel-packed texture storing **Ambient Occlusion (`R`)**, **Roughness (`G`)**, and **Metallic (`B`)** in a single image (converted downstream via `KTX2 UASTC`).
    - **Normal Map (`4096×4096`, Linear, OpenGL `+Y`):** Tangent-space normal map free of shading seams (converted downstream via `KTX2 UASTC`).
 
-## 🔄 4. End-to-End Contribution Workflow (With `Git LFS` Support)
+## 📝 4. Standard Issue Creation Protocol (How 3D Tasks Are Published)
+
+Every 3D modeling task in [Model3d-Metaverse-Rang/issues](https://www.google.com/search?q=https://github.com/iranpsc/Model3d-Metaverse-Rang/issues) MUST follow a standardized structure so 3D developers worldwide have complete clarity on the visual brief, directory path, labels, timeline, and quality gates.
+
+### A. Standardized Issue Title Format
+```text
+[3D-MODEL][<Requester-ID>] <Object-Name-In-English> — <Persian/English Short Summary> (<Location/Zone>)
+```
+- **Example:** `[3D-MODEL][bn-1000] Aryana-Urban-Bench — Smart Urban Bench for Aryana Island (صندلی شهری جزیره آریانا)`
+
+### B. Required GitHub Issue Sidebar Metadata (Type, Labels, Project Fields & Timeline)
+When creating an issue in this repository, configure the right-hand GitHub sidebar with the following exact metadata:
+
+| Metadata Dimension | Required Setting / Value | Options & Standard Taxonomy |
+| :--- | :--- | :--- |
+| **1. Issue Type (`Type`)** | **`Feature`** or **`Task`** | Use `Task` for standard 3D asset production; `Feature` for modular architectural kits; `Bug` for topology/UV/texture fixes on existing models. |
+| **2. Category Label (`3d-category:*`)** | Select **1** asset scale label | `3d-category:urban-prop` (Urban furniture/props) · `3d-category:building` (Single structure) · `3d-category:modular-complex` (`>100MB` split kit) · `3d-category:vehicle` · `3d-category:foliage` |
+| **3. Requester Label (`requester:*`)** | Select **1** requester label | `requester:bn-1000` (Matrix Exit Fund) · `requester:citizen-vod` · `requester:metarang-core` |
+| **4. Zone / Island Label (`zone:*`)** | Select target metaverse zone | `zone:aryana-island` (جزیره آریانا) · `zone:greater-tunb` (جزیره تنب بزرگ) · `zone:matrix-zone` · `zone:global` |
+| **5. Tech Spec Labels (`spec:*`)** | Attach mandatory standard tags | `spec:gltf-unpacked` · `spec:4k-tiled-pbr` · `spec:under-100mb` · `spec:raw-source-required` |
+| **6. Priority Label (`priority:*`)** | Select urgency level | `priority:P0-critical` · `priority:P1-high` · `priority:P2-medium` · `priority:P3-low` |
+| **7. Project Board (`Projects`)** | Link to **`MetaRang | متاورس رنگ`** | Set `Architecture Layer` = `🎮 3D Multiverse (Unity/Node)`, `Status` = `Todo`, `Quality Gate` = `📝 Dev In-Progress` |
+| **8. Timeline & Estimate (`Milestone`)** | Assign Sprint & Delivery Window | Specify **Estimated Effort** (e.g., `3–5 Days`), **Start Date**, and **Target Delivery Date** inside the issue body and Project `Target Release Date` field. |
+
+### C. Required Sections Inside Every 3D Issue Body
+1. **Task Metadata & Target Directory Table:** Explicitly state the Requester Name, Requester ID (e.g., `bn-1000`), English Object Folder Name, exact target repository path (`investors/bn-1000/Aryana-Urban-Bench/`), Priority, and Delivery Timeline.
+2. **Visual Reference Brief (Images & Video Walkthrough):** Embed multi-angle reference images, concept art, material callouts, and an explanatory video link/attachment describing the aesthetic and functional details.
+3. **Physical Dimensions & Modular Architecture Spec:** Specify real-world metric dimensions (`Length × Width × Height` in meters), sub-mesh separation requirements for **MetaRang Native Studio** colliders (`Box`/`Capsule`/`Sphere`), and modular splitting rules if the structure exceeds `100 MB`.
+4. **Material & 4K Tiled PBR Breakdown:** List the surface materials (`Wood`, `Metal`, `Concrete`, `Stone`, `Glass`, `Emissive`) that must be mapped using `4096×4096` seamless tiled textures in `textures/`.
+5. **Mandatory Deliverables & Acceptance Checklist (`- [ ]`):** Interactive tasklist covering `gltf/`, `textures/`, `source/`, and `previews/` requirements.
+
+## 🔄 5. End-to-End Contribution Workflow (With `Git LFS` Support)
 
 All 3D modeling tasks follow a strict 5-stage Git workflow integrated with our [**Organization Project Board (`github.com/orgs/iranpsc/projects/2`)**](https://github.com/orgs/iranpsc/projects/2):
 
 ### Step 1: Select a 3D Modeling Task in GitHub Issues
 1. Open the [Issues Tab (github.com/iranpsc/Model3d-Metaverse-Rang/issues)](https://www.google.com/search?q=https://github.com/iranpsc/Model3d-Metaverse-Rang/issues).
-2. Each issue specifies:
-   - **Requester Category & ID:** e.g., `investors/bn-1000` (Matrix Exit Fund).
-   - **Object English Name:** e.g., `Matrix-Central-Tower`.
-   - **Visual Brief:** Reference images, architectural diagrams, and explanatory video walkthroughs.
+2. Review the issue's **Requester Category & ID** (e.g., `investors/bn-1000`), **Object English Name** (e.g., `Aryana-Urban-Bench`), reference images/video, and delivery timeline.
 3. Comment on the issue to claim the task before starting work.
 
 ### Step 2: Clone, Configure `Git LFS` & Create a Dedicated Branch
@@ -135,7 +160,7 @@ git add .gitattributes
 
 # 3. Create your dedicated feature branch named after the Issue and Requester ID
 git checkout -b feat/issue-<ISSUE_NUMBER>-<requester-id>-<object-name>
-# Example: git checkout -b feat/issue-12-bn-1000-matrix-central-tower
+# Example: git checkout -b feat/issue-1-bn-1000-aryana-urban-bench
 ```
 
 ### Step 3: Export Unpacked `.gltf`, Save Raw Source & Organize Folders
@@ -155,7 +180,7 @@ Open a Pull Request on GitHub targeting the `main` branch and notify the review 
 ### Step 5: Technical Review & Merge to `main`
 The **MetaRang 3D Review Team** inspects the model on your branch (verifying the unpacked `.gltf` structure, manual texture replacement responsiveness, `source/` file integrity, UV tiling, and `<= 100 MB` compliance) and merges the approved Pull Request into `main`.
 
-## ✅ 5. Pull Request (PR) Template & Mandatory QA Checklist
+## ✅ 6. Pull Request (PR) Template & Mandatory QA Checklist
 
 > [!NOTE]
 > Copy and complete the template below in your Pull Request description when submitting a new 3D model:
@@ -165,7 +190,7 @@ The **MetaRang 3D Review Team** inspects the model on your branch (verifying the
 
 ### 🗂️ Directory & Requester Metadata
 - **Requester Category & ID:** `e.g., investors/bn-1000`
-- **Object English Folder Name:** `e.g., Matrix-Central-Tower`
+- **Object English Folder Name:** `e.g., Aryana-Urban-Bench`
 - **Target Directory Path:** `<category>/<requester-id>/<Object-Name-In-English>/`
 - **Modular Split Status:** `[ ] Single Model (<= 100 MB)` | `[ ] Split into __ Modular Sub-Models (Each <= 100 MB)`
 
@@ -193,34 +218,50 @@ The **MetaRang 3D Review Team** inspects the model on your branch (verifying the
 ```
 
 
-## 🇮🇷 ۶. چکیده اجرایی و راهنمای جامع مشارکت در مخزن مدل‌سازی سه‌بعدی متاورس رنگ (Persian Executive Summary)
+## 🇮🇷 ۷. چکیده اجرایی و راهنمای جامع مشارکت و ثبت ایشو در مخزن مدل‌سازی سه‌بعدی متاورس رنگ (Persian Executive Summary)
 
 مخزن رسمی **[`Model3d-Metaverse-Rang`](https://github.com/iranpsc/Model3d-Metaverse-Rang)** در بستر **[ارگانیزیشن گیت‌هاب هلدینگ زنجیره تأمین بهشت (`iranpsc`)](https://github.com/iranpsc)**، مرکز تخصصی و بین‌المللی تعریف تسک‌ها، طراحی، بهینه‌سازی و انتشار تمامی **مدل‌های سه‌بعدی پروژه متاورس رنگ | متارنگ ([metarang.com](https://metarang.com/en/about))** است. تمامی مدل‌های تولیدشده در این مخزن پس از تایید فنی و ادغام روی شاخه `main`، مستقیماً در جهان سه‌بعدی متارنگ ([Metaverse-Rang-World-3D-Multiverse](https://github.com/iranpsc/Metaverse-Rang-World-3D-Multiverse)) و بازارچه **[سه‌بعدی متا (`3d.irpsc.com`)](https://3d.irpsc.com)** مورد استفاده قرار می‌گیرند.
 
-### 🎯 چرخه کاری جدید (از ثبت Issue تا Pull Request و رزومه‌سازی بین‌المللی)
-کلیه سفارش‌ها و تسک‌های ساخت مدل‌های سه‌بعدی متارنگ (شامل ساختمان‌ها، سازه‌های کلان، اجسام کوچک و بزرگ) به همراه **شناسه درخواست‌دهنده، تصاویر مرجع و ویدیوی توضیحات** در بخش **[Issues این ریپازیتوری](https://www.google.com/search?q=https://github.com/iranpsc/Model3d-Metaverse-Rang/issues)** منتشر می‌شوند:
-1. **انتخاب تسک و ایجاد شاخه (`Branch`):** توسعه‌دهندگان و طراحان سه‌بعدی در سراسر جهان پس از بررسی Issue، تسک را انتخاب کرده و با فعال‌سازی **`Git LFS`**، اقدامات طراحی و بهینه‌سازی را روی یک شاخه (`Branch`) مجزا انجام می‌دهند.
-2. **ثبت `Pull Request` توسط طراح و بررسی فنی:** پس از اتمام طراحی، طراح شخصاً با رعایت استانداردهای مخزن اقدام به ثبت **Pull Request** می‌کند تا مدل تولیدشده توسط تیم فنی بررسی و در صورت تایید روی شاخه اصلی (`main`) پوش و ادغام شود.
-3. **رزومه‌سازی معتبر جهانی تحت لایسنس `AGPL-3.0`:** به دلیل عمومی بودن مخزن و اتصال به **[برد رسمی پروژه متارنگ (`github.com/orgs/iranpsc/projects/2`)](https://github.com/orgs/iranpsc/projects/2)**، تمامی کامیت‌ها و Pull Requestهای تاییدشده به عنوان سابقه رسمی مشارکت در یک کلان‌پروژه بین‌المللی در پروفایل گیت‌هاب طراح ثبت می‌گردد.
+### 📋 استاندارد رسمی ثبت ایشو (Issue Creation Standard) در این ریپازیتوری
+برای اینکه تمامی سفارش‌های ساخت مدل سه‌بعدی با یک ساختار یکپارچه، قابل پیگیری در **[برد پروژه متارنگ (`Projects/2`)](https://github.com/orgs/iranpsc/projects/2)** و قابل فهم برای توسعه‌دهندگان ایرانی و بین‌المللی ثبت شوند، هر Issue جدید باید دارای مشخصات زیر باشد:
+
+1. **فرمت استاندارد عنوان ایشو (`Title`):**
+   `[3D-MODEL][<Requester-ID>] <Object-English-Name> — <عنوان فارسی/انگلیسی مدل> (<نام جزیره یا پهنه>)`
+   - *مثال:* `[3D-MODEL][bn-1000] Aryana-Urban-Bench — طراحی و ساخت مدل سه‌بعدی صندلی‌های شهری جزیره آریانا`
+2. **تایپ ایشو (`Issue Type`):**
+   - انتخاب گزینه **`Task`** (برای ساخت مدل‌های سه‌بعدی منفرد)، **`Feature`** (برای پکیج‌ها و کیت‌های ماژولار بزرگ) یا **`Bug`** (برای اصلاح UV، تکسچر یا توپولوژی مدل‌های قبلی).
+3. **برچسب‌های استاندارد (`Labels`):**
+   - **برچسب دسته‌بندی مدل:** `3d-category:urban-prop` (المان‌های شهری) | `3d-category:building` (ساختمان) | `3d-category:modular-complex` (سازه‌های بزرگ بالای ۱۰۰ مگابایت) | `3d-category:vehicle` | `3d-category:foliage`
+   - **برچسب درخواست‌دهنده:** `requester:bn-1000` (صندوق خروج از ماتریکس) | `requester:citizen-vod` | `requester:metarang-core`
+   - **برچسب پهنه جغرافیایی:** `zone:aryana-island` (جزیره آریانا) | `zone:greater-tunb` (تنب بزرگ) | `zone:matrix-zone`
+   - **برچسب الزامات فنی:** `spec:gltf-unpacked` | `spec:4k-tiled-pbr` | `spec:under-100mb` | `spec:raw-source-required`
+   - **برچسب اولویت:** `priority:P0-critical` | `priority:P1-high` | `priority:P2-medium`
+4. **اتصال به پروژه و زمان‌بندی (`Projects & Timeline`):**
+   - اتصال ایشو در ستون سمت راست به پروژه **`MetaRang | متاورس رنگ`** ([Projects/2](https://github.com/orgs/iranpsc/projects/2)) و تنظیم لایه معماری روی `🎮 3D Multiverse (Unity/Node)`.
+   - درج دقیق **زمان‌بندی تخمینی (Estimated Effort)**، **تاریخ شروع** و **مهلت تحویل (Target Delivery Date)** در جدول ابتدای ایشو و فیلد `Target Release Date`.
+5. **محتوای الزامی داخل بدنه ایشو (`Issue Body`):**
+   - جدول شناسنامه تسک و **مسیر دقیق دایرکتوری ذخیره‌سازی** (مثلاً `investors/bn-1000/Aryana-Urban-Bench/`).
+   - **پیوست‌های بصری:** تصاویر مرجع از زوایای مختلف، کانسپت هنری و **ویدیوی توضیحات** (در صورت وجود).
+   - **مشخصات فنی و ابعادی:** طول، عرض و ارتفاع به متر (`1 Unit = 1 Meter`)، تفکیک زیرمش‌ها برای کلایدرهای فیزیکی در استودیو بومی متارنگ و فهرست متریال‌های تایل‌بندی‌شده `4K`.
+   - **چک‌لیست پذیرش (`- [ ]`):** شامل تحویل در ۴ پوشه مجزای `gltf/`، `textures/`، `source/` و `previews/`.
 
 ### 🗂️ قانون ساختار دایرکتوری‌ها بر اساس شناسه درخواست‌دهنده (مثال: `bn-1000`)
 تمامی دایرکتوری‌ها در این مخزن بر اساس **گروه و شناسه یکتای درخواست‌دهنده** ساختاردهی می‌شوند. به عنوان مثال، برای سفارش‌های ثبت‌شده توسط **«صندوق خروج از ماتریکس» با شناسه `bn-1000`**:
 - مدل‌ها در دایرکتوری سرمایه‌گذاران (`investors/`) و زیرپوشه اختصاصی شناسه درخواست‌دهنده یعنی **`investors/bn-1000/`** قرار می‌گیرند.
-- در داخل پوشه `bn-1000/`، برای هر مدل یک پوشه با **نام انگلیسی آبجکت** (مثلاً `investors/bn-1000/Matrix-Central-Tower/`) ایجاد می‌شود.
-- در داخل پوشه هر آبجکت، فایل‌ها به صورت کاملاً تفکیک‌شده در ۴ زیرپوشه مجزا قرار می‌گیرند:
-  1. **`gltf/`:** حاوی خروجی باز **`.gltf` و `.bin`** (متصل به پوشه `../textures/`).
-  2. **`textures/`:** حاوی تکسچرهای مادر **`4K (4096×4096)`** به صورت تایل‌بندی‌شده.
+- در داخل پوشه `bn-1000/`، برای هر مدل یک پوشه با **نام انگلیسی آبجکت** (مثلاً `investors/bn-1000/Aryana-Urban-Bench/`) ایجاد می‌شود که حاوی ۴ زیرپوشه تفکیک‌شده است:
+  1. **`gltf/`:** حاوی خروجی باز **`.gltf` و `.bin`** (متصل به پوشه `../textures/`؛ **استفاده از فرمت بسته `.glb` مجاز نیست** تا با تغییر دستی تکسچرها در پوشه `textures/`، ظاهر مدل سه‌بعدی بلافاصله تغییر کند).
+  2. **`textures/`:** حاوی تکسچرهای مادر **`4K (4096×4096)`** به صورت تایل‌بندی‌شده (`BaseColor`، `ORM` و `Normal`).
   3. **`source/`:** حاوی **فایل خام قابل ویرایش نرم‌افزار** (مانند `.blend`، `.max`، `.ma` یا `.fbx` بدون تکسچرهای Embedشده تا حجم آن زیر ۱۰۰ مگابایت بماند).
   4. **`previews/`:** حاوی تصاویر رندر نهایی، شبکه Wireframe و چیدمان UV برای بررسی سریع در Pull Request.
 
 ### 📏 استانداردهای فنی الزامی برای تایید مدل‌های سه‌بعدی در متارنگ
-- **۱. تحویل به صورت فایل باز `.gltf` (تغییر پویا و دستی تکسچرها):** خروجی مدل حتماً باید به صورت **فایل باز `.gltf` به همراه پوشه تکسچرهای جداگانه** باشد (نه فایل بسته `.glb`)، به‌گونه‌ای که اگر هر یک از فایل‌های تکسچر در پوشه `textures/` به صورت دستی جایگزین یا ویرایش شود، ظاهر مدل سه‌بعدی بلافاصله بدون نیاز به خروجی گرفتن مجدد تغییر کند.
-- **۲. تحویل الزامی فایل خام (`source/`) با رعایت سقف حجم:** قرار دادن فایل خام طراحی در پوشه `source/` الزامی است، اما فایل خام نباید تکسچرهای حجیم را در دل خود Pack کرده باشد و حجم آن نباید از سقف مجاز (`100 MB`) فراتر رود.
+- **۱. تحویل به صورت فایل باز `.gltf` (تغییر پویا و دستی تکسچرها):** خروجی مدل حتماً باید به صورت **فایل باز `.gltf` به همراه پوشه تکسچرهای جداگانه** باشد تا با جایگزینی دستی هر تکسچر در پوشه `textures/`، مدل سه‌بعدی بدون نیاز به خروجی گرفتن مجدد بروزرسانی شود.
+- **۲. تحویل الزامی فایل خام (`source/`) با رعایت سقف حجم:** قرار دادن فایل خام طراحی در پوشه `source/` الزامی است و حجم هیچ فایل یا پکیجی نباید از **۱۰۰ مگابایت (`100 MB`)** بیشتر باشد.
 - **۳. تکسچرهای `4K`، طراحی تایل‌بندی (`Tiling`) و `UV` مهندسی‌شده:** تمامی تکسچرها باید با کیفیت **`4K (4096×4096)`**، بر پایه استاندارد تایل‌بندی (**Seamless Tiling & Trim Sheets**) و با **UV مناسب و تراکم پیکسلی یکنواخت** تولید شوند تا در پایپ‌لاین [معماری ۷ سطحی KTX2 متارنگ](https://docs.google.com/document/d/1V3WmtzFnHSwDsLzdFEuchUnKyaG5WHXqFAkYych4QGw/edit?usp=drivesdk&ouid=105432883195858560779) (از ۶۴ تا ۴۰۹۶ پیکسل) بهترین عملکرد را داشته باشند.
-- **۴. سقف حجم `100 MB` و تفکیک ماژولار مدل‌های بزرگ (بدون محدودیت خشک پلی‌گان):** محدودیت ثابتی برای تعداد پلی‌گان‌ها تعیین نشده است، اما توپولوژی باید کاملاً بهینه باشد و **حجم کل مدل یا هیچ فایل خامی نباید از ۱۰۰ مگابایت (`100 MB`) بیشتر باشد**. اگر سازه‌ای بیش از ۱۰۰ مگابایت حجم دارد، باید به چند مدل کوچک‌تر و ماژولار تفکیک شود.
+- **۴. سقف حجم `100 MB` و تفکیک ماژولار مدل‌های بزرگ (بدون محدودیت خشک پلی‌گان):** محدودیت ثابتی برای تعداد پلی‌گان‌ها تعیین نشده است، اما اگر سازه‌ای بیش از ۱۰۰ مگابایت حجم دارد، باید به چند مدل کوچک‌تر و ماژولار تفکیک شود و تمامی فایل‌ها با **`Git LFS`** پوش گردند.
 
 
-## 🔗 7. Ecosystem Links & Connected Repositories
+## 🔗 8. Ecosystem Links & Connected Repositories
 
 - 🌍 **MetaRang Official Portal:** [https://metarang.com/en/about](https://metarang.com/en/about)
 - 📊 **MetaRang GitHub Project Board (`SSOT`):** [https://github.com/orgs/iranpsc/projects/2](https://github.com/orgs/iranpsc/projects/2)
@@ -230,5 +271,7 @@ The **MetaRang 3D Review Team** inspects the model on your branch (verifying the
 - 🛒 **3D RGB Asset Marketplace (`3d.irpsc.com`):** [https://github.com/iranpsc/3DMeta-Shop-Object-3D](https://github.com/iranpsc/3DMeta-Shop-Object-3D)
 
 
+
 **Licensed under the [GNU Affero General Public License v3.0 (`AGPL-3.0`)](https://www.gnu.org/licenses/agpl-3.0.en.html) • © [Paradise Supply Chain Holding (`IranPSC`)](https://github.com/iranpsc)**
+
 
