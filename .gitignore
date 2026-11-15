@@ -1,0 +1,42 @@
+==========================================
+Blender Backup & Temporary Files
+==========================================
+*.blend1
+*.blend2
+*.blend3
+*.blend4
+*.blend5
+*.blend@
+quit.blend
+==========================================
+3D Software Temp & Autosave Files
+==========================================
+Substance Painter / Designer backups
+*.spp_backup
+*.sbsar.tmp
+*.lock
+Autodesk 3ds Max / Maya temp files
+*.bak
+*.swatches
+*.mel.tmp
+incrementalSave/
+autoback/
+ZBrush quick saves
+QuickSave*
+==========================================
+OS & Editor Junk Files
+==========================================
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+==========================================
+Archive Files (Models must be unpacked)
+==========================================
+*.zip
+*.rar
+*.7z
+*.tar.gz
