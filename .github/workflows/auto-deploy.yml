@@ -1,0 +1,109 @@
+name: "Auto-Deploy 3D Model to 3DMeta-Shop (HMAC Webhook)"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "01-investors-assets/**"
+      - "02-companies-holdings/**"
+      - "03-citizen-creations/**"
+      - "04-metarang-core-assets/**"
+      - "05-forked-developments/**"
+  workflow_dispatch:
+    inputs:
+      model_dir:
+        description: "Exact model directory path to re-deploy (e.g. 01-investors-assets/BN-1000/lighthouse/v1)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-to-3dmeta:
+    name: "deploy-to-3dmeta-laravel"
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, 'chore(owners)')"
+    steps:
+      - name: Checkout main (with Git LFS)
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 2
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install --no-cache-dir -r requirements.txt
+
+      - name: Detect Target Model Directories
+        id: detect
+        env:
+          MANUAL_DIR: ${{ github.event.inputs.model_dir }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re, subprocess
+
+          manual = (os.environ.get("MANUAL_DIR") or "").strip().strip("/")
+          if manual:
+              dirs = [manual]
+          else:
+              diff_out = subprocess.check_output(
+                  ["git", "diff", "--name-only", "HEAD~1", "HEAD"], text=True
+              ).splitlines()
+              pattern = re.compile(r"^((?:01-investors-assets|02-companies-holdings|03-citizen-creations|04-metarang-core-assets|05-forked-developments)/[^/]+/[^/]+/[^/]+)/")
+              dirs = sorted({pattern.match(p).group(1) for p in diff_out if pattern.match(p)})
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"dirs_json={json.dumps(dirs)}\n")
+          print("Target directories for deployment:", dirs)
+          PY
+
+      - name: Finalize product-detail.json & Dispatch HMAC Webhook
+        env:
+          DIRS_JSON: ${{ steps.detect.outputs.dirs_json }}
+          THREEDMETA_WEBHOOK_URL: ${{ secrets.THREEDMETA_WEBHOOK_URL }}
+          THREEDMETA_WEBHOOK_SECRET: ${{ secrets.THREEDMETA_WEBHOOK_SECRET }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+
+          dirs = json.loads(os.environ.get("DIRS_JSON", "[]"))
+          commit_sha = os.environ["COMMIT_SHA"]
+
+          for d in dirs:
+              p = Path(d)
+              if not p.is_dir():
+                  continue
+              owners_file = p / "owners.json"
+              if not owners_file.exists():
+                  parts = p.as_posix().split("/")
+                  owners_file.write_text(json.dumps({
+                      "model_path": p.as_posix(),
+                      "primary_owner_id": parts[1] if len(parts) > 1 else "",
+                      "license_policy": "DUAL_CC_BY_NC_SA_4_0_AND_3DMETA_COMMERCIAL",
+                      "total_owners": 0,
+                      "owners": []
+                  }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+              subprocess.check_call([
+                  "python3", "scripts/deploy_webhook.py",
+                  "--model-dir", d,
+                  "--commit-sha", commit_sha
+              ])
+          PY
+
+      - name: Commit initialized owners.json if newly created
+        run: |
+          git config user.name "MetaRang Deploy Bot"
+          git config user.email "bot@metarang.com"
+          git add "**/owners.json" || true
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(owners): initialize owners.json for published model [skip ci]"
+            git push origin main
+          fi
