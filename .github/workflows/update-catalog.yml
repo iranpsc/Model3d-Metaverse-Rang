@@ -1,0 +1,46 @@
+name: "Update Live 3D Catalog (main)"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "01-investors-assets/**"
+      - "02-companies-holdings/**"
+      - "03-citizen-creations/**"
+      - "04-metarang-core-assets/**"
+      - "05-forked-developments/**"
+      - "scripts/generate_catalog.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-catalog:
+    name: "update-live-catalog"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate catalog/CATALOG.md and catalog/catalog.json
+        run: python3 scripts/generate_catalog.py
+
+      - name: Commit updated catalog if changed
+        run: |
+          git config user.name "MetaRang Catalog Bot"
+          git config user.email "bot@metarang.com"
+          git add catalog/CATALOG.md catalog/catalog.json
+          if git diff --cached --quiet; then
+            echo "No catalog changes detected."
+          else
+            git commit -m "chore(catalog): auto-update live 3D model catalog [skip ci]"
+            git push origin main
+          fi

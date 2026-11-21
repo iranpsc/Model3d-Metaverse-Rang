@@ -1,0 +1,142 @@
+name: "Issue Auto-Linker & Parent Model Helper"
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  link-parent-model:
+    name: "issue-auto-linker"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main (metadata only, no LFS download needed)
+        uses: actions/checkout@v4
+        with:
+          lfs: false
+          fetch-depth: 1
+
+      - name: Parse Parent Model Ref & Build Helper Comment
+        id: linker
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          REPO_FULL: ${{ github.repository }}
+        run: |
+          python3 - <<'EOF'
+          import json, os, re
+          from pathlib import Path
+
+          body = os.environ.get("ISSUE_BODY", "") or ""
+          repo = os.environ.get("REPO_FULL", "iranpsc/Model3d-Metaverse-Rang")
+
+          # Extract Parent Model Ref section from GitHub Issue Form markdown
+          sections = {}
+          for part in re.split(r"^###\s+", body, flags=re.MULTILINE)[1:]:
+              lines = part.splitlines()
+              if not lines:
+                  continue
+              sections[lines[0].strip().lower()] = "\n".join(lines[1:]).strip()
+
+          parent_ref = ""
+          for k, v in sections.items():
+              if "parent model ref" in k or "مدل مرجع" in k:
+                  cleaned = v.strip().strip("`").strip("/")
+                  if cleaned.lower() not in {"", "_no response_", "none", "n/a", "-"}:
+                      parent_ref = cleaned
+                  break
+
+          if not parent_ref:
+              print("No Parent Model Ref provided (New Model v1). Skipping linker comment.")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+                  out.write("should_comment=false\n")
+              raise SystemExit(0)
+
+          target_dir = Path(parent_ref)
+          exists = target_dir.exists() and target_dir.is_dir()
+          tree_url = f"https://github.com/{repo}/tree/main/{parent_ref}"
+
+          if not exists:
+              comment = (
+                  "<!-- METARANG-ISSUE-AUTO-LINKER -->\n"
+                  "## ⚠️ هشدار ربات لینک‌ساز ایشو (`Issue Auto-Linker`)\n\n"
+                  f"مسیر مدل مرجع ثبت‌شده (`{parent_ref}`) در حال حاضر روی شاخه `main` **یافت نشد**.\n\n"
+                  "- لطفاً مسیر دقیق را از [کاتالوگ زنده مدل‌ها (`catalog/CATALOG.md`)](https://github.com/"
+                  f"{repo}/blob/main/catalog/CATALOG.md) کپی کرده و ایشو را ویرایش کنید تا لینک دانلود و مشخصات نسخه قبلی به‌صورت خودکار ثبت شود.\n"
+              )
+          else:
+              detail_path = target_dir / "product-detail.json"
+              spec_block = "> ℹ️ فایل `product-detail.json` هنوز در نسخه مرجع ثبت نشده است.\n"
+              if detail_path.exists():
+                  try:
+                      d = json.loads(detail_path.read_text(encoding="utf-8"))
+                      dims = d.get("dimensions_meters", {})
+                      stats = d.get("analysis_standards", {})
+                      anim = d.get("animation", {})
+                      colors = d.get("colors", {}).get("dominant_hex", [])
+                      spec_block = (
+                          "### 📊 خلاصه مشخصات فنی نسخه مرجع (`product-detail.json`)\n"
+                          "| شاخص | مقدار در نسخه مرجع |\n"
+                          "| :--- | :--- |\n"
+                          f"| **ابعاد (طول × عرض × ارتفاع)** | `{dims.get('length_m', '-')}m × {dims.get('width_m', '-')}m × {dims.get('height_m', '-')}m` |\n"
+                          f"| **زیربنا (Footprint)** | `{dims.get('footprint_sqm', '-')} m²` |\n"
+                          f"| **تعداد پالیگان / پوینت** | `{stats.get('triangle_count', '-')}` Triangles / `{stats.get('vertex_count', '-')}` Vertices |\n"
+                          f"| **وضعیت انیمیشن** | `{anim.get('animation_status', '-')}` (`{anim.get('clip_count', 0)}` clips) |\n"
+                          f"| **رنگ‌های غالب (HEX)** | `{', '.join(colors[:5]) or '-'}` |\n"
+                      )
+                  except Exception:
+                      pass
+
+              comment = (
+                  "<!-- METARANG-ISSUE-AUTO-LINKER -->\n"
+                  "## 🔗 راهنمای دانلود مدل مرجع (`Issue Auto-Linker | MR-3D-EXEC-V5.0`)\n\n"
+                  f"مسیر مدل مرجع با موفقیت روی شاخه `main` تایید شد:\n"
+                  f"- **مسیر مخزن:** `{parent_ref}`\n"
+                  f"- **مشاهده مستقیم پوشه در گیت‌هاب:** [باز کردن دایرکتوری مدل مرجع]({tree_url})\n\n"
+                  "### ⚡ دانلود سریع فقط همین پوشه بدون کلون کل مخزن (`git sparse-checkout`)\n"
+                  "مدل‌ساز عزیز، برای دریافت سریع فایل‌های نسخه قبلی، این دستورات را در **Git Bash** یا **PowerShell** اجرا کنید:\n"
+                  "```bash\n"
+                  f"git clone --filter=blob:none --sparse https://github.com/{repo}.git\n"
+                  "cd Model3d-Metaverse-Rang\n"
+                  f"git sparse-checkout set {parent_ref}\n"
+                  "git lfs pull\n"
+                  "```\n\n"
+                  f"{spec_block}"
+              )
+
+          Path("linker-comment.md").write_text(comment, encoding="utf-8")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write("should_comment=true\n")
+          EOF
+
+      - name: Post or Update Helper Comment on Issue
+        if: steps.linker.outputs.should_comment == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('linker-comment.md', 'utf8');
+            const marker = '<!-- METARANG-ISSUE-AUTO-LINKER -->';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
