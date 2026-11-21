@@ -1,0 +1,183 @@
+name: "🌿 گیاهان، درختان و طبیعت | Foliage & Nature"
+description: "طراحی نخل‌های جزیره آریانا، درختان، بوته‌ها، گل‌آرایی و صخره‌ها"
+title: "[FOLIAGE] <OWNER-ID>/<model-slug>/<v1> - عنوان مدل"
+labels: ["3d-model", "spec-driven", "type:foliage-nature"]
+body:
+  - type: "markdown"
+    attributes:
+      value: |
+        ### راهنمای قرارداد تست هوشمند (`MR-3D-EXEC-V5.0` | دسته: `foliage-nature`)
+        * **فیلدهای ستاره‌دار (*)** برای مسیر، مالکیت و نوع عملیات **الزامی** هستند.
+        * **جستجوی مدل‌های موجود روی `main` برای ارتقا یا فورک:** پیش از پر کردن فیلد «مدل مرجع»، وارد [کاتالوگ زنده مدل‌ها (`catalog/CATALOG.md`)](https://github.com/iranpsc/Model3d-Metaverse-Rang/blob/main/catalog/CATALOG.md) شوید، با `Ctrl+F` مدل را پیدا کرده و مسیر دقیق آن را کپی کنید. ربات ایشو بلافاصله لینک مستقیم دانلود پوشه را کامنت می‌کند.
+        * **قواعد تست خودکار (`Zero-Override`):** ابعاد با **تلورانس ±۲٪**، پالیگان و پوینت با **سقف قطعی**، و رنگ‌های `HEX` مدیر با **تطبیق سخت‌گیرانه (`CIELAB ΔE`)** بررسی می‌شوند. فیلدهای خالی در تست **`SKIPPED`** خواهند شد.
+  - type: "dropdown"
+    id: "operation_type"
+    attributes:
+      label: "نوع عملیات (Operation Type)"
+      description: "مشخص کنید این سفارش برای ساخت مدل جدید است یا ارتقای نسخه رسمی مدل موجود"
+      options:
+        - "ساخت مدل جدید (New Model - v1)"
+        - "ارتقای نسخه رسمی مدل موجود (Official Upgrade - v2, v3, ...)"
+        - "فورک و توسعه متفاوت (Fork & Divergent Development)"
+    validations:
+      required: true
+  - type: "input"
+    id: "parent_model_ref"
+    attributes:
+      label: "مسیر مدل مرجع روی main (در صورت ارتقا یا فورک | Parent Model Ref)"
+      description: "برای یافتن مسیر دقیق از catalog/CATALOG.md استفاده کنید (مثلاً 01-investors-assets/BN-1000/lighthouse/v1). ربات ایشو لینک دانلود پوشه را خودکار ثبت می‌کند."
+      placeholder: "01-investors-assets/BN-1000/lighthouse/v1"
+    validations:
+      required: false
+  - type: "dropdown"
+    id: "asset_classification"
+    attributes:
+      label: "طبقه دایرکتوری مرکزی (Asset Classification)"
+      options:
+        - "01-investors-assets"
+        - "02-companies-holdings"
+        - "03-citizen-creations"
+        - "04-metarang-core-assets"
+        - "05-forked-developments"
+    validations:
+      required: true
+  - type: "input"
+    id: "primary_owner_id"
+    attributes:
+      label: "شناسه مالک اصلی / دایرکتوری (Primary Owner ID)"
+      description: "شناسه هلدینگ، صندوق سرمایه‌گذاری (مثلاً BN-1000) یا شناسه شهروندی (مثلاً HM-2000001)"
+      placeholder: "BN-1000"
+    validations:
+      required: true
+  - type: "input"
+    id: "model_slug"
+    attributes:
+      label: "نام استاندارد مدل (Model Slug - kebab-case)"
+      description: "فقط حروف کوچک انگلیسی، عدد و خط تیره"
+      placeholder: "ariana-palm-tree"
+    validations:
+      required: true
+  - type: "input"
+    id: "version"
+    attributes:
+      label: "نسخه هدف (Target Version)"
+      description: "برای سفارش رسمی روی ایشو با پیشوند v وارد شود (v1, v2, v3)"
+      placeholder: "v1"
+      value: "v1"
+    validations:
+      required: true
+  - type: "input"
+    id: "zone"
+    attributes:
+      label: "محدوده مکانی / پروژه (Zone / Project)"
+      placeholder: "جزیره آریانا (Ariana Island)"
+    validations:
+      required: false
+  - type: "input"
+    id: "requester_citizen_id"
+    attributes:
+      label: "شناسه شهروندی درخواست‌دهنده / طراح (Citizen ID)"
+      description: "مطابق با بخش «درباره من» در سامانه متارنگ"
+      placeholder: "HM-2000001"
+    validations:
+      required: true
+  - type: "markdown"
+    attributes:
+      value: |
+        ---
+        ### مشخصات اختصاصی این دسته (Category Plugin Specs)
+  - type: "dropdown"
+    id: "alpha_mode"
+    attributes:
+      label: "حالت رندر برگ‌ها (Alpha / Cutout Mode)"
+      options:
+        - "MASK / Cutout (بهینه برای WebGL/VR)"
+        - "BLEND"
+        - "Not Specified"
+    validations:
+      required: false
+  - type: "dropdown"
+    id: "lod_required"
+    attributes:
+      label: "سطوح LOD برای فضای سبز انبوه"
+      options:
+        - "Not Specified"
+        - "Required (الزامی)"
+    validations:
+      required: false
+  - type: "markdown"
+    attributes:
+      value: |
+        ---
+        ### قرارداد تست مشترک هسته (Core Auto-Test Contract)
+        *(برای بازه از فرمت `min-max` استفاده کنید. فیلدهای خالی در تست `SKIPPED` می‌شوند.)*
+  - type: "input"
+    id: "length_m"
+    attributes:
+      label: "طول مدل به متر (Length in meters | ±2%)"
+      placeholder: "6.5-8.5"
+    validations:
+      required: false
+  - type: "input"
+    id: "width_m"
+    attributes:
+      label: "عرض مدل به متر (Width in meters | ±2%)"
+      placeholder: "6.5-8.5"
+    validations:
+      required: false
+  - type: "input"
+    id: "height_m"
+    attributes:
+      label: "ارتفاع مدل به متر (Height in meters | ±2%)"
+      placeholder: "10-12"
+    validations:
+      required: false
+  - type: "input"
+    id: "max_polygons"
+    attributes:
+      label: "حداکثر تعداد پالیگان / مثلث (Max Polygons - Strict)"
+      placeholder: "50000"
+    validations:
+      required: false
+  - type: "input"
+    id: "max_points"
+    attributes:
+      label: "حداکثر تعداد پوینت / ورتکس (Max Points / Vertices - Strict)"
+      placeholder: "30000"
+    validations:
+      required: false
+  - type: "input"
+    id: "required_colors"
+    attributes:
+      label: "رنگ‌های الزامی مدیر (Required Colors - HEX | Strict CIELAB Match)"
+      description: "کدهای HEX با کاما جدا شوند؛ عدم رعایت باعث FAIL شدن Merge می‌شود"
+      placeholder: "#F8FAFC, #DC2626, #334155"
+    validations:
+      required: false
+  - type: "dropdown"
+    id: "animation_status"
+    attributes:
+      label: "وضعیت انیمیشن (Animation Status)"
+      options:
+        - "Not Specified"
+        - "none (Static)"
+        - "baked_clips"
+        - "skeletal_rigged"
+        - "shader_driven"
+    validations:
+      required: false
+  - type: "input"
+    id: "texture_specs"
+    attributes:
+      label: "وضعیت و محدودیت تکسچر (Texture Specs)"
+      description: "فرمت: max_count=6, max_res=4K, formats=png|ktx2"
+      placeholder: "max_count=6, max_res=4K, formats=png|ktx2"
+    validations:
+      required: false
+  - type: "textarea"
+    id: "additional_details"
+    attributes:
+      label: "جزئیات تکمیلی، سبک بصری و توضیحات متخصص"
+      placeholder: "سبک فوتورئالیستیک، تراز بودن کامل Pivot و سایر نکات اجرایی..."
+    validations:
+      required: false

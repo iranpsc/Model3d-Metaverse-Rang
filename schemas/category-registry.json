@@ -1,0 +1,269 @@
+{
+  "schema_version": "5.0.0",
+  "spec_ref": "MR-3D-EXEC-V5.0",
+  "core_rules": {
+    "valid_root_directories": [
+      "01-investors-assets",
+      "02-companies-holdings",
+      "03-citizen-creations",
+      "04-metarang-core-assets",
+      "05-forked-developments"
+    ],
+    "dimensional_tolerance_pct": 0.02,
+    "color_delta_e_threshold": 24.0,
+    "max_package_size_mb": 100.0,
+    "min_render_images": 2,
+    "zero_override_branch": "main"
+  },
+  "categories": {
+    "building": {
+      "id": "building",
+      "label": "type:building",
+      "title_en": "Building, Architecture & Structures",
+      "title_fa": "سازه، معماری و ساختمان",
+      "issue_template": ".github/ISSUE_TEMPLATE/01-building.yml",
+      "validator_module": "scripts/validators/building.py",
+      "defaults": {
+        "ground_aligned": true,
+        "require_uv": true
+      }
+    },
+    "avatar": {
+      "id": "avatar",
+      "label": "type:avatar",
+      "title_en": "Avatar & Humanoid Characters (Ready Player Me)",
+      "title_fa": "آواتار و کاراکتر انسانی (Ready Player Me)",
+      "issue_template": ".github/ISSUE_TEMPLATE/02-avatar.yml",
+      "validator_module": "scripts/validators/avatar.py",
+      "standards": {
+        "rig_standard": "ReadyPlayerMe_Humanoid",
+        "blendshapes_mandatory": true,
+        "required_bones": [
+          "Hips",
+          "Spine",
+          "Spine1",
+          "Spine2",
+          "Neck",
+          "Head",
+          "LeftShoulder",
+          "LeftArm",
+          "LeftForeArm",
+          "LeftHand",
+          "RightShoulder",
+          "RightArm",
+          "RightForeArm",
+          "RightHand",
+          "LeftUpLeg",
+          "LeftLeg",
+          "LeftFoot",
+          "RightUpLeg",
+          "RightLeg",
+          "RightFoot"
+        ],
+        "required_visemes_sample": [
+          "viseme_sil",
+          "viseme_aa",
+          "viseme_O"
+        ],
+        "max_bones_default": 75
+      }
+    },
+    "vehicle": {
+      "id": "vehicle",
+      "label": "type:vehicle",
+      "title_en": "Vehicles (Land, Air & Sea - Unity 6)",
+      "title_fa": "وسایل نقلیه (زمینی، هوایی و دریایی - Unity 6)",
+      "issue_template": ".github/ISSUE_TEMPLATE/03-vehicle.yml",
+      "validator_module": "scripts/validators/vehicle.py",
+      "subtypes": {
+        "car": {
+          "title_fa": "خودرو سواری",
+          "required_nodes": [
+            "Body",
+            "Wheel_FL",
+            "Wheel_FR",
+            "Wheel_RL",
+            "Wheel_RR",
+            "Door_FL",
+            "Door_FR",
+            "SteeringWheel",
+            "Seat_Driver"
+          ]
+        },
+        "bus": {
+          "title_fa": "اتوبوس",
+          "required_nodes": [
+            "Body",
+            "Wheel_FL",
+            "Wheel_FR",
+            "Wheel_RL",
+            "Wheel_RR",
+            "Door_Front",
+            "Door_Mid",
+            "Seat_Driver"
+          ]
+        },
+        "motorcycle_2w": {
+          "title_fa": "موتور دوچرخ",
+          "required_nodes": [
+            "Body",
+            "Wheel_F",
+            "Wheel_R",
+            "Handlebar",
+            "Seat_Driver"
+          ]
+        },
+        "atv_4w": {
+          "title_fa": "موتور چهارچرخ (ATV)",
+          "required_nodes": [
+            "Body",
+            "Wheel_FL",
+            "Wheel_FR",
+            "Wheel_RL",
+            "Wheel_RR",
+            "Handlebar",
+            "Seat_Driver"
+          ]
+        },
+        "helicopter": {
+          "title_fa": "هلیکوپتر",
+          "required_nodes": [
+            "Body",
+            "Rotor_Main",
+            "Rotor_Tail",
+            "LandingGear",
+            "Seat_Pilot"
+          ]
+        },
+        "airplane": {
+          "title_fa": "هواپیما",
+          "required_nodes": [
+            "Body",
+            "Propeller",
+            "LandingGear_F",
+            "LandingGear_L",
+            "LandingGear_R",
+            "Aileron_L",
+            "Aileron_R",
+            "Rudder",
+            "Seat_Pilot"
+          ]
+        },
+        "jetpack": {
+          "title_fa": "جت‌پک",
+          "required_nodes": [
+            "Body",
+            "Thruster_L",
+            "Thruster_R",
+            "Mount_Spine"
+          ]
+        },
+        "hot_air_balloon": {
+          "title_fa": "بالن",
+          "required_nodes": [
+            "Envelope",
+            "Basket",
+            "Burner"
+          ]
+        },
+        "boat": {
+          "title_fa": "قایق",
+          "required_nodes": [
+            "Hull",
+            "Propeller",
+            "Rudder",
+            "Helm",
+            "Seat_Driver"
+          ]
+        },
+        "tourist_ship": {
+          "title_fa": "کشتی توریستی",
+          "required_nodes": [
+            "Hull",
+            "Deck_Main",
+            "Propeller_L",
+            "Propeller_R",
+            "Rudder",
+            "Bridge",
+            "Boarding_Zone"
+          ]
+        }
+      }
+    },
+    "wearable": {
+      "id": "wearable",
+      "label": "type:wearable",
+      "title_en": "Wearables, Footwear & Avatar Accessories",
+      "title_fa": "پوشاک، کفش و اکسسوری آواتار",
+      "issue_template": ".github/ISSUE_TEMPLATE/04-wearable.yml",
+      "validator_module": "scripts/validators/wearable.py",
+      "standards": {
+        "rpm_skeleton_compatible": true
+      }
+    },
+    "urban-prop": {
+      "id": "urban-prop",
+      "label": "type:urban-prop",
+      "title_en": "Urban Furniture & City Props",
+      "title_fa": "مبلمان و المان‌های شهری",
+      "issue_template": ".github/ISSUE_TEMPLATE/05-urban-prop.yml",
+      "validator_module": "scripts/validators/urban_prop.py"
+    },
+    "interior-decor": {
+      "id": "interior-decor",
+      "label": "type:interior-decor",
+      "title_en": "Interior Design & Furniture",
+      "title_fa": "دکوراسیون داخلی و اثاثیه",
+      "issue_template": ".github/ISSUE_TEMPLATE/06-interior-decor.yml",
+      "validator_module": "scripts/validators/interior_decor.py"
+    },
+    "foliage-nature": {
+      "id": "foliage-nature",
+      "label": "type:foliage-nature",
+      "title_en": "Foliage, Trees & Natural Elements",
+      "title_fa": "گیاهان، درختان و المان‌های طبیعی",
+      "issue_template": ".github/ISSUE_TEMPLATE/07-foliage-nature.yml",
+      "validator_module": "scripts/validators/foliage_nature.py"
+    },
+    "tech-gadget": {
+      "id": "tech-gadget",
+      "label": "type:tech-gadget",
+      "title_en": "Tech Gadgets, Smart Devices & Robots",
+      "title_fa": "گجت‌ها، تجهیزات هوشمند و ربات",
+      "issue_template": ".github/ISSUE_TEMPLATE/08-tech-gadget.yml",
+      "validator_module": "scripts/validators/tech_gadget.py"
+    },
+    "art-sculpture": {
+      "id": "art-sculpture",
+      "label": "type:art-sculpture",
+      "title_en": "Artworks, Sculptures & Collectibles (NFT)",
+      "title_fa": "آثار هنری، مجسمه و کلکسیونی (NFT)",
+      "issue_template": ".github/ISSUE_TEMPLATE/09-art-sculpture.yml",
+      "validator_module": "scripts/validators/art_sculpture.py"
+    },
+    "modular-kit": {
+      "id": "modular-kit",
+      "label": "type:modular-kit",
+      "title_en": "Modular Architectural & City Kits",
+      "title_fa": "پک‌های ماژولار و سازه‌های قطعه‌ای",
+      "issue_template": ".github/ISSUE_TEMPLATE/10-modular-kit.yml",
+      "validator_module": "scripts/validators/modular_kit.py"
+    },
+    "animation-pack": {
+      "id": "animation-pack",
+      "label": "type:animation-pack",
+      "title_en": "Avatar Animation Packs (RPM / Mixamo)",
+      "title_fa": "پکیج‌های انیمیشن و حرکت آواتار",
+      "issue_template": ".github/ISSUE_TEMPLATE/11-animation-pack.yml",
+      "validator_module": "scripts/validators/animation_pack.py"
+    },
+    "environment-vfx": {
+      "id": "environment-vfx",
+      "label": "type:environment-vfx",
+      "title_en": "Environments, Lighting & 3D VFX",
+      "title_fa": "محیط، نورپردازی و افکت سه‌بعدی",
+      "issue_template": ".github/ISSUE_TEMPLATE/12-environment-vfx.yml",
+      "validator_module": "scripts/validators/environment_vfx.py"
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MetaRang Self-Initiated Derivative Config (MR-3D-EXEC-V5.0)",
+  "type": "object",
+  "required": [
+    "asset_type",
+    "parent_model_ref",
+    "creator_citizen_id",
+    "custom_variant_name",
+    "custom_pricing"
+  ],
+  "properties": {
+    "asset_type": {
+      "type": "string",
+      "enum": [
+        "building",
+        "avatar",
+        "vehicle",
+        "wearable",
+        "urban-prop",
+        "interior-decor",
+        "foliage-nature",
+        "tech-gadget",
+        "art-sculpture",
+        "modular-kit",
+        "animation-pack",
+        "environment-vfx"
+      ]
+    },
+    "vehicle_subtype": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "car",
+        "bus",
+        "motorcycle_2w",
+        "atv_4w",
+        "helicopter",
+        "airplane",
+        "jetpack",
+        "hot_air_balloon",
+        "boat",
+        "tourist_ship",
+        null
+      ]
+    },
+    "parent_model_ref": {
+      "type": "string",
+      "pattern": "^(01-investors-assets|02-companies-holdings|03-citizen-creations|04-metarang-core-assets|05-forked-developments)/[^/]+/[^/]+/[^/]+$"
+    },
+    "creator_citizen_id": {
+      "type": "string",
+      "pattern": "^HM-[0-9]+$"
+    },
+    "custom_variant_name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,60}$"
+    },
+    "custom_pricing": {
+      "type": "object",
+      "required": [
+        "currency",
+        "amount",
+        "marketplace"
+      ],
+      "properties": {
+        "currency": {
+          "type": "string",
+          "enum": [
+            "PSC",
+            "PSD",
+            "IRR",
+            "USD"
+          ]
+        },
+        "amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "marketplace": {
+          "type": "string",
+          "const": "3DMeta-Shop"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "📚 کاتالوگ زنده مدل‌های تاییدشده روی main (جستجو قبل از ثبت ایشو)"
+    url: "https://github.com/iranpsc/Model3d-Metaverse-Rang/blob/main/catalog/CATALOG.md"
+    about: "فهرست قابل جستجوی تمام مدل‌های موجود برای ارتقا (v2) یا فورک و توسعه متفاوت"
+  - name: "🌐 پروفایل «درباره من» در متاورس رنگ (MetaRang)"
+    url: "https://metarang.com"
+    about: "ثبت حساب گیت‌هاب و لینک‌های شبکه‌های اجتماعی متصل به شناسه شهروندی"
+  - name: "🛒 بکند سامانه سه‌بعدی متا (Laravel API)"
+    url: "https://github.com/iranpsc/3DMeta-Shop-Object-3D"
+    about: "مخزن بکند مارکت‌پلیس، Webhook دیپلوی و Queue Worker ثبت owners.json"
+  - name: "🖥️ فرانت‌اند سامانه سه‌بعدی متا (Next.js)"
+    url: "https://github.com/iranpsc/3DMeta-Shop-Object-3D-Frontend"
+    about: "مخزن فرانت‌اند فروشگاه و فیلترهای تحلیلی ۱۲ دسته تخصصی"

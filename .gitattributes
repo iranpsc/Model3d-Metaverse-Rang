@@ -1,28 +1,13 @@
-==========================================
-3D Formats (Tracked via Git LFS)
-==========================================
+# Git LFS tracking for MetaRang 3D Assets (MR-3D-EXEC-V5.0)
 *.glb filter=lfs diff=lfs merge=lfs -text
+*.gltf filter=lfs diff=lfs merge=lfs -text
 *.bin filter=lfs diff=lfs merge=lfs -text
-*.blend filter=lfs diff=lfs merge=lfs -text
 *.fbx filter=lfs diff=lfs merge=lfs -text
-*.obj filter=lfs diff=lfs merge=lfs -text
-*.max filter=lfs diff=lfs merge=lfs -text
-*.ma filter=lfs diff=lfs merge=lfs -text
-*.mb filter=lfs diff=lfs merge=lfs -text
-*.ztl filter=lfs diff=lfs merge=lfs -text
-*.zpr filter=lfs diff=lfs merge=lfs -text
-*.spp filter=lfs diff=lfs merge=lfs -text
-==========================================
-Textures & Images (Tracked via Git LFS)
-==========================================
+*.blend filter=lfs diff=lfs merge=lfs -text
+*.ktx2 filter=lfs diff=lfs merge=lfs -text
 *.png filter=lfs diff=lfs merge=lfs -text
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.jpeg filter=lfs diff=lfs merge=lfs -text
 *.webp filter=lfs diff=lfs merge=lfs -text
-*.ktx2 filter=lfs diff=lfs merge=lfs -text
-*.tga filter=lfs diff=lfs merge=lfs -text
-*.tif filter=lfs diff=lfs merge=lfs -text
-*.tiff filter=lfs diff=lfs merge=lfs -text
 *.exr filter=lfs diff=lfs merge=lfs -text
 *.hdr filter=lfs diff=lfs merge=lfs -text
-*.psd filter=lfs diff=lfs merge=lfs -text
