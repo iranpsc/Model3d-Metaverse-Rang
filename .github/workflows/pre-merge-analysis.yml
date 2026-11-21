@@ -1,0 +1,122 @@
+name: "Pre-Merge 3D Analysis (V5.0 Plugin-Based Zero-Override)"
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+    branches: [main]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: write
+
+jobs:
+  pre-merge-3d-analysis:
+    name: "pre-merge-3d-analysis"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository (with Git LFS)
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install --no-cache-dir pillow
+
+      - name: Detect Dual-Track (Issue-Backed vs Self-Initiated) & Model Directory
+        id: detect
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python3 - <<'EOF'
+          import os, re, subprocess, sys
+          from pathlib import Path
+
+          pr_body = os.environ.get("PR_BODY", "") or ""
+          diff_out = subprocess.check_output(
+              ["git", "diff", "--name-only", os.environ["BASE_SHA"], os.environ["HEAD_SHA"]],
+              text=True
+          ).splitlines()
+
+          pattern = re.compile(r"^((?:01-investors-assets|02-companies-holdings|03-citizen-creations|04-metarang-core-assets|05-forked-developments)/[^/]+/[^/]+/[^/]+)/")
+          dirs = sorted({pattern.match(p).group(1) for p in diff_out if pattern.match(p)})
+          if not dirs:
+              print("::error::No valid 3D model directory (<root>/<owner>/<slug>/<version_or_variant>/) found in PR changes.")
+              sys.exit(1)
+
+          model_dir = dirs[0]
+          m_issue = re.search(r"(?:closes|fixes|resolves)\s+#(\d+)", pr_body, flags=re.IGNORECASE)
+
+          if m_issue:
+              track = "issue-backed"
+              issue_num = m_issue.group(1)
+          elif (Path(model_dir) / "derivative-config.json").exists():
+              track = "self-initiated"
+              issue_num = ""
+          else:
+              print("::error::PR must either link an Issue ('Closes #<N>') OR include 'derivative-config.json' for Track 2 self-initiated development.")
+              sys.exit(1)
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"track={track}\n")
+              out.write(f"issue_number={issue_num}\n")
+              out.write(f"model_dir={model_dir}\n")
+          print(f"Detected Track={track}, Issue=#{issue_num}, ModelDir={model_dir}")
+          EOF
+
+      - name: Run V5.0 Plugin-Based 3D Analysis
+        id: analyze
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          METARANG_IDENTITY_API_URL: ${{ vars.METARANG_IDENTITY_API_URL }}
+        run: |
+          CMD=(python3 scripts/analyze_3d_model.py
+            --model-dir "${{ steps.detect.outputs.model_dir }}"
+            --track "${{ steps.detect.outputs.track }}"
+            --pr-number "${{ github.event.pull_request.number }}"
+            --github-actor "${{ github.actor }}"
+            --report-out analysis-report.md)
+          if [ -n "${{ steps.detect.outputs.issue_number }}" ]; then
+            CMD+=(--issue-url "https://github.com/${{ github.repository }}/issues/${{ steps.detect.outputs.issue_number }}")
+          fi
+          "${CMD[@]}"
+
+      - name: Publish Report to Step Summary
+        if: always()
+        run: |
+          if [ -f analysis-report.md ]; then
+            cat analysis-report.md >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Post Analysis Checklist & Report Comment on PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (!fs.existsSync('analysis-report.md')) return;
+            const body = '<!-- METARANG-3D-ANALYSIS-REPORT -->\n' + fs.readFileSync('analysis-report.md', 'utf8');
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body && c.body.includes('<!-- METARANG-3D-ANALYSIS-REPORT -->'));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner: context.repo.owner, repo: context.repo.repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body });
+            }
+
+      - name: Enforce Zero-Override Gate
+        if: steps.analyze.outcome != 'success'
+        run: |
+          echo "::error::V5.0 3D Model Analysis FAILED! Merge is blocked under Zero-Override policy."
+          exit 1

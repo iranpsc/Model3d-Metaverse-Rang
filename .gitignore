@@ -40,3 +40,6 @@ Archive Files (Models must be unpacked)
 *.rar
 *.7z
 *.tar.gz
+
+__pycache__/
+*.pyc

@@ -1,0 +1,44 @@
+name: "Build Standalone Windows Tester (.exe) V5.0"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/analyze_3d_model.py"
+      - "scripts/validators/**"
+      - "schemas/category-registry.json"
+      - "tools/metarang_3d_tester_gui.py"
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows-exe:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Pillow & PyInstaller
+        run: pip install --no-cache-dir pillow pyinstaller
+
+      - name: Build MetaRang-3D-Tester.exe (V5.0 with Plugins & Registry)
+        run: |
+          pyinstaller --noconfirm --onefile --windowed `
+            --name "MetaRang-3D-Tester-V5" `
+            --add-data "scripts/analyze_3d_model.py;scripts" `
+            --add-data "scripts/validators;scripts/validators" `
+            --add-data "schemas/category-registry.json;schemas" `
+            tools/metarang_3d_tester_gui.py
+
+      - name: Upload MetaRang-3D-Tester-V5.exe Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MetaRang-3D-Tester-V5-Windows-EXE
+          path: dist/MetaRang-3D-Tester-V5.exe
