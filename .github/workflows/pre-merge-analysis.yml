@@ -27,7 +27,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install --no-cache-dir pillow
+        run: pip install --no-cache-dir -r requirements.txt
 
       - name: Detect Dual-Track (Issue-Backed vs Self-Initiated) & Model Directory
         id: detect
@@ -46,10 +46,27 @@ jobs:
               text=True
           ).splitlines()
 
+          roots = (
+              "01-investors-assets/",
+              "02-companies-holdings/",
+              "03-citizen-creations/",
+              "04-metarang-core-assets/",
+              "05-forked-developments/",
+          )
+          root_docs = {f"{r}README.md" for r in roots} | {f"{r}.gitkeep" for r in roots}
+
+          asset_files = [p for p in diff_out if p.startswith(roots) and p not in root_docs]
+
+          if not asset_files:
+              print("No 3D asset files changed (Infrastructure / Docs / Workflows PR). Skipping 3D model validation.")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+                  out.write("skip_analysis=true\n")
+              sys.exit(0)
+
           pattern = re.compile(r"^((?:01-investors-assets|02-companies-holdings|03-citizen-creations|04-metarang-core-assets|05-forked-developments)/[^/]+/[^/]+/[^/]+)/")
-          dirs = sorted({pattern.match(p).group(1) for p in diff_out if pattern.match(p)})
+          dirs = sorted({pattern.match(p).group(1) for p in asset_files if pattern.match(p)})
           if not dirs:
-              print("::error::No valid 3D model directory (<root>/<owner>/<slug>/<version_or_variant>/) found in PR changes.")
+              print("::error::3D asset files must be placed inside a valid 4-level directory: <root>/<owner_id>/<model_slug>/<version_or_variant>/")
               sys.exit(1)
 
           model_dir = dirs[0]
@@ -66,6 +83,7 @@ jobs:
               sys.exit(1)
 
           with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write("skip_analysis=false\n")
               out.write(f"track={track}\n")
               out.write(f"issue_number={issue_num}\n")
               out.write(f"model_dir={model_dir}\n")
@@ -73,6 +91,7 @@ jobs:
           EOF
 
       - name: Run V5.0 Plugin-Based 3D Analysis
+        if: steps.detect.outputs.skip_analysis != 'true'
         id: analyze
         continue-on-error: true
         env:
@@ -91,14 +110,14 @@ jobs:
           "${CMD[@]}"
 
       - name: Publish Report to Step Summary
-        if: always()
+        if: always() && steps.detect.outputs.skip_analysis != 'true'
         run: |
           if [ -f analysis-report.md ]; then
             cat analysis-report.md >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: Post Analysis Checklist & Report Comment on PR
-        if: always()
+        if: always() && steps.detect.outputs.skip_analysis != 'true'
         uses: actions/github-script@v7
         with:
           script: |
@@ -116,7 +135,7 @@ jobs:
             }
 
       - name: Enforce Zero-Override Gate
-        if: steps.analyze.outcome != 'success'
+        if: steps.detect.outputs.skip_analysis != 'true' && steps.analyze.outcome != 'success'
         run: |
           echo "::error::V5.0 3D Model Analysis FAILED! Merge is blocked under Zero-Override policy."
           exit 1

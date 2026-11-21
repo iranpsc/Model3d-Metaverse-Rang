@@ -1,6 +1,6 @@
 # 📚 Live 3D Model Catalog (`main`) | کاتالوگ زنده مدل‌های سه‌بعدی متارنگ
 
-> **Auto-generated on:** `2026-11-21T06:02:47Z` | **Total Directories:** `0` (**Published:** `0` | **Placeholders:** `0`)
+> **Auto-generated on:** `2026-11-21T07:07:59Z` | **Total Directories:** `0` (**Published:** `0` | **Placeholders:** `0`)
 > **How to use:** Press `Ctrl+F` to find any model, copy its **Model Path** into the `Parent Model Ref` field of a New Issue, and the **Issue Auto-Linker Bot** will automatically post direct download links and technical specs.
 
 ---
